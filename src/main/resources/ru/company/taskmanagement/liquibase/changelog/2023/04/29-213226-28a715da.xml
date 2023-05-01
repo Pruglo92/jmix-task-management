@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="task-management">
+        <createTable tableName="PROJECT">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_PROJECT"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="task-management">
+        <createTable tableName="SUBTASK">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SUBTASK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ESTIMATION" type="INT"/>
+            <column name="COMPLETED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TASK_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="task-management">
+        <createTable tableName="TASK">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_TASK"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DUE_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ASSIGNEE_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROJECT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PRIORITY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="task-management">
+        <createIndex indexName="IDX_SUBTASK_TASK" tableName="SUBTASK">
+            <column name="TASK_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="TASK_ID" baseTableName="SUBTASK" constraintName="FK_SUBTASK_ON_TASK"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="TASK"/>
+    </changeSet>
+    <changeSet id="5" author="task-management">
+        <createIndex indexName="IDX_TASK__ASSIGNEE" tableName="TASK">
+            <column name="ASSIGNEE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ASSIGNEE_ID" baseTableName="TASK" constraintName="FK_TASK_ON_ASSIGNEE"
+                                 referencedColumnNames="ID" referencedTableName="USER_"/>
+    </changeSet>
+    <changeSet id="6" author="task-management">
+        <createIndex indexName="IDX_TASK__PROJECT" tableName="TASK">
+            <column name="PROJECT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PROJECT_ID" baseTableName="TASK" constraintName="FK_TASK_ON_PROJECT"
+                                 referencedColumnNames="ID" referencedTableName="PROJECT"/>
+    </changeSet>
+</databaseChangeLog>
